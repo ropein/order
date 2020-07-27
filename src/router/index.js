@@ -28,9 +28,14 @@ const router = new VueRouter({
             // redirect: store.getters['menuPath'],
             children: [
                 {
-                    path: '/home',
+                    path: '/',
                     name:'home',
                     component:() => import('../views/tab/home.vue')
+                },
+                {
+                    path: '/cart',
+                    name:'cart',
+                    component:() => import('../views/tab/cart.vue')
                 },
                 // 元数据部分路由引入
                 // ...BusinessMetadata,

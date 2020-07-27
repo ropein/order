@@ -1,6 +1,6 @@
 const path = require('path')
 module.exports = {
-    /* 部署生产环境和开发环境下的URL：可对当前环境进行区分，baseUrl 从 Vue CLI 3.3 起已弃用，要使用publicPath */ 
+    /* 部署生产环境和开发环境下的URL：可对当前环境进行区分，baseUrl 从 Vue CLI 3.3 起已弃用，要使用publicPath */
     /* baseUrl: process.env.NODE_ENV === 'production' ? './' : '/' */
     publicPath: process.env.NODE_ENV === 'production' ? '/public/' : './',
     /* 输出文件目录：在npm run build时，生成文件的目录名称 */
@@ -22,6 +22,7 @@ module.exports = {
         /* 自动打开浏览器 */
         open: true,
         /* 设置为0.0.0.0则所有的地址均能访问 */
+        // host:'192.168.101.5',
         host: '0.0.0.0',
         port: 3000,
         https: false,
@@ -69,7 +70,7 @@ module.exports = {
             }
         }
     },
-    chainWebpack:config => { 
+    chainWebpack:config => {
         // config.optimization.minimize(true);
         // config.optimization.splitChunks({
         //     chunks:'all'

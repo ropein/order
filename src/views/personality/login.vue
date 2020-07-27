@@ -79,6 +79,7 @@
             },
             register() {
                 console.log('注册')
+                this.$router.push('/register')
             }
         }
     }

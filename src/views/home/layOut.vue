@@ -2,7 +2,7 @@
   <div>
     <van-sticky>
     <van-nav-bar
-            style="background: #4fc08d"
+            style="background: #E62F2D"
     >
       <template #left>
         <van-icon name="location" color="#fff"/>
@@ -20,12 +20,12 @@
     >
     </van-popup>
     </van-sticky>
-    <router-view></router-view>
+    <router-view style="padding-bottom: 53px"></router-view>
     <div class="footer">
-      <van-tabbar v-model="active">
-        <van-tabbar-item icon="home-o">首页</van-tabbar-item>
-        <van-tabbar-item icon="apps-o">分类</van-tabbar-item>
-        <van-tabbar-item icon="shopping-cart-o">购物车</van-tabbar-item>
+      <van-tabbar v-model="active" placeholder="true">
+        <van-tabbar-item icon="home-o" @click="$router.push('/')">首页</van-tabbar-item>
+<!--        <van-tabbar-item icon="apps-o">分类</van-tabbar-item>-->
+        <van-tabbar-item icon="shopping-cart-o" @click="$router.push('/cart')">购物车</van-tabbar-item>
         <van-tabbar-item icon="user-o">个人中心</van-tabbar-item>
       </van-tabbar>
     </div>
@@ -42,8 +42,17 @@
         },
         methods: {
             showPopup() {
-                this.show = true;
+                if (!this.username){
+                  this.$router.push('/login')
+                } else {
+                    this.show = true;
+                }
             },
         }
     }
 </script>
+<style>
+  .footer {
+    position: fixed;
+  }
+</style>
