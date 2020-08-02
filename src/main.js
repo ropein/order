@@ -17,6 +17,7 @@ Vue.config.productionTip = false
 Vue.prototype.$utils = utils
 Vue.prototype.$api = api
 
+
 new Vue({
   render: h => h(App),
   router
