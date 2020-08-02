@@ -60,7 +60,7 @@
                 console.log('submit', values);
             },
             onClickLeft() {
-                console.log('返回')
+                this.$router.back()
             },
             changeType() {
                 this.flag = !this.flag

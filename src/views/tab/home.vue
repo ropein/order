@@ -76,9 +76,13 @@
                 data:[],
                 finished: false,
                 loading: false,
-                offset: 0,
-                page: 0,
-                limit: 10,
+                // 一页条数
+                pageSize: 10,
+                // 第几页
+                pageNum: 1,
+                // offset: 0,
+                // page: 0,
+                // limit: 10,
                 // 左侧
                 active: 0,
                 items: [{ text: '分组 1' }, { text: '分组 2' }],
@@ -91,7 +95,7 @@
                 }
             }
         },
-        mounted() {
+        created() {
             this.fetch_items()
         },
         methods: {
@@ -109,15 +113,22 @@
                 }
             },
             load_more_items: function() {
-                this.page += 1;
-                this.offset = this.limit * this.page;
+                this.pageNum += 1
+                this.offset = this.pageNum * this.pageNum
+                // this.page += 1;
+                // this.offset = this.limit * this.page;
                 this.fetch_items();
             },
-
-            fetch_items: function() {
+            async fetch_items(){
+                let { data } = await this.$api.getList({pageSize:10, pageNum:1})
+                console.log(123, data)
+            },
+            // fetch_items: function() {
                 // var that = this;
 
                 // $.ajax({
+            // 跳过6个实例,然后取5个
+            // Project.findAll({ offset: 6, limit: 5 })
                 //     url: `/api/get_items?offset=${this.offset}&limit=${this.limit}`,
                 //     type: 'get',
                 //     dataType: 'json',
@@ -130,27 +141,27 @@
                 //         }
                 //     }
                 // });
-                this.list = [
-                    {
-                        id:0,
-                        title:'名字',
-                        price:'30.00',
-                        desc:'描述',
-                        num:2,
-                        stock:10,
-                        thumb:'https://img.yzcdn.cn/vant/ipad.jpeg'
-                    },
-                    {
-                        id:1,
-                        title:'名字1',
-                        price:'50.00',
-                        desc:'描述5',
-                        num:1,
-                        stock:2,
-                        thumb:'https://img.yzcdn.cn/vant/ipad.jpeg'
-                    }
-                ]
-            }
+            //     this.list = [
+            //         {
+            //             id:0,
+            //             title:'名字',
+            //             price:'30.00',
+            //             desc:'描述',
+            //             num:2,
+            //             stock:10,
+            //             thumb:'https://img.yzcdn.cn/vant/ipad.jpeg'
+            //         },
+            //         {
+            //             id:1,
+            //             title:'名字1',
+            //             price:'50.00',
+            //             desc:'描述5',
+            //             num:1,
+            //             stock:2,
+            //             thumb:'https://img.yzcdn.cn/vant/ipad.jpeg'
+            //         }
+            //     ]
+            // }
         }
     }
 </script>

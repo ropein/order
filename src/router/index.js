@@ -6,11 +6,11 @@ const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes:[
-        // {
-        //     path:'/',
-        //     name:'home',
-        //     component:() => import('../views/home/home.vue')
-        // },
+        {
+            path:'/test',
+            name:'home',
+            component:() => import('../views/home/home.vue')
+        },
         {
             path:'/login',
             name:'login',
@@ -20,6 +20,11 @@ const router = new VueRouter({
             path:'/loginByTel',
             name:'loginByTel',
             component: () => import('../views/personality/loginByTel.vue'),
+        },
+        {
+            path: '/register',
+            name:'register',
+            component:() => import('../views/personality/register.vue')
         },
         {
             path: '/',

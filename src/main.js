@@ -13,7 +13,6 @@ import 'vant/lib/index.css';
 Vue.use(Vant);
 
 
-
 Vue.config.productionTip = false
 Vue.prototype.$utils = utils
 Vue.prototype.$api = api
