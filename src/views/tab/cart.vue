@@ -13,7 +13,6 @@
           ></van-checkbox>
           <div class="shopdetail">
             <div class="detailimg">
-              <!-- 判断是否有图片 -->
               <img
                       :src="item.img"
               />
@@ -90,7 +89,8 @@
                 allchecked: false,
                 selectedData: [],
                 // 总价
-                totalprice: 0
+                totalprice: 0,
+                num: 0
             };
         },
         mounted() {
@@ -124,7 +124,7 @@
                         this.allchecked = true;
                     }
             },
-            // 商品数量
+            // 商品数量改变
             onChange(item) {
                 // Toast(item.num);
                 if (item.num===0) {
@@ -138,7 +138,6 @@
             count: function() {
                 console.log('计算价格')
                 let totalPrice = 0; //临时总价
-                // let totalLvd = 0; //临时lvd
                 this.goods.forEach(function(val) {
                     if (val.isChecked) {
                         totalPrice += Number(val.num) * Number(val.price); //累计总价

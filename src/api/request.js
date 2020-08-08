@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 var instance = axios.create({
-    baseURL: process.env.VUE_APP_BASEURL, // 公共接口url（如果有多个的公共接口的话，需要处理）
+    baseURL: '/api', // 公共接口url（如果有多个的公共接口的话，需要处理）
     timeout: 60000, // 请求超时 10s
 });
 // 头部

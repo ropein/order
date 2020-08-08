@@ -42,13 +42,24 @@ const router = new VueRouter({
                     name:'cart',
                     component:() => import('../views/tab/cart.vue')
                 },
-                // 元数据部分路由引入
-                // ...BusinessMetadata,
-                // {
-                //     path: '/taskTopologicalGraph',
-                //     name: '/taskTopologicalGraph',
-                //     component: () => import('@/views/dataGovernance/businessMetadata/blood/Blood')
-                // },
+                {
+                    path: '/search',
+                    name:'search',
+                    component:() => import('../views/tab/search.vue')
+                },
+                {
+                    path: '/person',
+                    name:'person',
+                    component:() => import('../views/tab/person.vue')
+                },{
+                    path: '/address',
+                    name:'address',
+                    component:() => import('../views/tab/address.vue')
+                },{
+                    path: '/addressform',
+                    name:'addressform',
+                    component:() => import('../views/tab/addressform.vue')
+                },
             ]
         }
     ]
