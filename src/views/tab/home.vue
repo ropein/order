@@ -45,11 +45,24 @@
                 </svg>
               </div>
               <div v-if="item.specificationNumber > 1" class="specification">
-                <van-button round type="info" size="mini" @click="selectSpecification(item.productId)">选规格</van-button>
+                <van-button round type="info" size="mini" @click="selectSpecification(item)">选规格</van-button>
               </div>
-              <div>
-
-              </div>
+              <van-popup v-model="specificationShow" position="bottom" :style="{ height: '60%' }" >
+                <van-cell-group>
+                  <van-cell>
+                    <template #title>
+                      <van-image style="float:left;margin-left: 25px" width="100px" height="100px"  src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                    </template>
+                    <template #default>
+                      <p style="float: left">￥{{price}}</p><br>
+                      <p>剩余{{storage}}件</p>
+                      <p>请选择
+                        <span v-for="item in attributeList" :key="item.productAttributeId">{{item.productAttributeName}}</span>
+                      </p>
+                    </template>
+                  </van-cell>
+                </van-cell-group>
+              </van-popup>
             </template>
           </van-card>
         </van-list>
@@ -89,17 +102,9 @@
                 // 规格框
                 specificationShow:false,
                 // 规格列表
+                price:'',
+                storage:'',
                 attributeList:[],
-                sku: {
-                    // 数据结构见下方文档
-                },
-                goods: {
-                    // 数据结构见下方文档
-                },
-                goodsId:0,
-                messageConfig: {
-                    // 数据结构见下方文档
-                },
                 // 根据商品分类id获取列表
                 id:0
             }
@@ -210,15 +215,20 @@
                 })
             },
             // 选规格
-            selectSpecification(id) {
+            selectSpecification(item) {
+                console.log('item', item)
                 this.specificationShow = true
-                this.getProductAttributeList(id)
+                this.getProductAttributeList(item.productId)
+                this.price = item.minPrice
+                this.storage = item.productStorage
             },
             // 根据id获取规格
             async getProductAttributeList(id) {
                 // 商品id
-                this.goodsId = id
-                // let { data } = await this.$api.getProductAttributeListByProductId(id)
+                this.specificationShow=true
+                let { data } = await this.$api.getProductAttributeListByProductId(id)
+                this.attributeList=data.data
+                console.log('3333', data.data)
                 // this.attributeList = data.data
                 // console.log('规格列表', this.attributeList)
             },
@@ -239,7 +249,7 @@
     right: 20px;
     bottom: 8px;
   }
-  /deep/.van-sku-row__title{
-    float: left;
+  /deep/.van-cell__title {
+    width: 105px;
   }
 </style>
