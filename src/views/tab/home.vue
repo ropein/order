@@ -17,7 +17,7 @@
       </van-swipe>
     </div>
 <!--    树选择-->
-    <van-tree-select height="55vw" :items="items" :main-active-index.sync="active">
+    <van-tree-select :items="items" :main-active-index.sync="active">
       <template #content>
         <van-list
                 v-model="loading"
@@ -47,21 +47,55 @@
               <div v-if="item.specificationNumber > 1" class="specification">
                 <van-button round type="info" size="mini" @click="selectSpecification(item)">选规格</van-button>
               </div>
-              <van-popup v-model="specificationShow" position="bottom" :style="{ height: '60%' }" >
+              <van-popup v-model="specificationShow" position="bottom" :style="{ height: '60%' }"  closeable >
                 <van-cell-group>
                   <van-cell>
-                    <template #title>
-                      <van-image style="float:left;margin-left: 25px" width="100px" height="100px"  src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                    </template>
+                  <template #title>
+                    <van-image style="float:left;margin-left: 25px" width="100px" height="100px"  :src="image" />
+                  </template>
+                  <template #default>
+                    <p style="float: left">￥{{price}}</p><br>
+                    <p style="float:left;">剩余{{storage}}件</p><br>
+                    <div style="float:left;width: 100%">
+                      <span v-for="item in attributeList" :key="item.productAttributeId">
+                      <span style="float: left" v-if="!item.selected">请选择</span>
+                      <span  style="float: left" v-if="!item.selected">{{item.productAttributeName}}</span>
+                      <span style="float: left" v-if="item.selected">已选择</span>
+                      <span  style="float: left" v-if="item.selected">{{item.selected}}</span>
+                      </span>
+                    </div>
+                  </template>
+                </van-cell>
+                  <van-cell  v-for="item in attributeList" :key="item.productAttributeId">
                     <template #default>
-                      <p style="float: left">￥{{price}}</p><br>
-                      <p>剩余{{storage}}件</p>
-                      <p>请选择
-                        <span v-for="item in attributeList" :key="item.productAttributeId">{{item.productAttributeName}}</span>
+                      <p style="float: left">{{item.productAttributeName}}</p><br>
+                      <p style="float:left;" v-for="item2 in item.productAttributeValueDTOList" :key="item2.productAttributeValueId">
+                        <van-button size="small" v-if ="!item.selected||item2.productAttributeValue!==item.selected" @click="select(item.productAttributeId,item.productAttributeName, item2)">{{item2.productAttributeValue}}</van-button>
+                        <van-button size="small" style="background: pink" v-if ="item.selected&&item2.productAttributeValue===item.selected" @click="select(item.productAttributeId,item.productAttributeName, item2)">{{item2.productAttributeValue}}</van-button>
                       </p>
                     </template>
                   </van-cell>
+<!--                  <van-cell>-->
+<!--                    <template #title>-->
+<!--                      <div>数量</div>-->
+<!--                    </template>-->
+<!--                    <template #default>-->
+<!--                      <van-stepper-->
+<!--                              integer-->
+<!--                              min=0-->
+<!--                              v-model="num"-->
+<!--                              style="float:left;"-->
+<!--                              :disable-plus="num===item.productStorage"/>-->
+<!--                    </template>-->
+<!--                  </van-cell>-->
+<!--                  <van-cell>-->
+<!--                    <template #default>-->
+<!--                      <van-button round type="danger" style="margin-left: 120px" @click="onAddCartClicked">加入购物车</van-button>-->
+<!--                    </template>-->
+<!--                  </van-cell>-->
                 </van-cell-group>
+                <span >数量</span><van-stepper v-model="num" style="display:inline-block;margin-left: 40px" :disable-plus="num===item.productStorage"/>
+                <van-button round type="danger" @click="onAddCartClicked" style="display: block;margin-left: 80px">加入购物车</van-button>
               </van-popup>
             </template>
           </van-card>
@@ -105,8 +139,13 @@
                 price:'',
                 storage:'',
                 attributeList:[],
+                image:'',
+                selectColor:'#12212f8c',
+                selectList:[],
                 // 根据商品分类id获取列表
-                id:0
+                id:0,
+                selectall:false,
+                num:1
             }
         },
         watch:{
@@ -175,11 +214,10 @@
                     this.pageNum=1
                     let { data } = await this.$api.getProductListByProductCategoryId({productCategoryId:this.id,pageSize:this.pageSize, pageNum:this.pageNum})
                     if (data.data) {
-                        console.log('yyou', data)
                         this.list = data.data.list
                         if (this.pageNum > 1) {
                             this.dataList = this.list.concat(this.dataList)
-                            // this.dateList = [...this.dateList, ...this.list]
+                            this.dateList = [...this.dateList, ...this.list]
                         } else {
                             this.dataList = this.list
                         }
@@ -216,11 +254,11 @@
             },
             // 选规格
             selectSpecification(item) {
-                console.log('item', item)
                 this.specificationShow = true
                 this.getProductAttributeList(item.productId)
                 this.price = item.minPrice
                 this.storage = item.productStorage
+                this.image = item.productPicturePath
             },
             // 根据id获取规格
             async getProductAttributeList(id) {
@@ -234,6 +272,27 @@
             },
             onAddCartClicked() {
                 console.log('加入购物车')
+            },
+            async select(id, name, item) {
+                this.attributeList.forEach(item2 => {
+                    if (item2.productAttributeName === name) {
+                        this.$set(item2,'selected',item.productAttributeValue)
+                    }
+                    this.selectList.push(item.productAttributeValue)
+                })
+                this.selectall = this.attributeList.every(item=>item.selected)
+                if (this.selectall) {
+                    this.queryspe = {}
+                    this.attributeList.forEach(item2 => {
+                        this.queryspe[item2.productAttributeName]=item2.selected
+                    })
+                    console.log('this.queryspe', this.queryspe)
+                    let { data } = await this.$api.getSpecificationByProductIdAndSpecification({productId:id,productSpecification:this.queryspe})
+                    console.log('data273', data.data)
+                    this.price=data.data.productPrice
+                    this.storage = data.data.productStorage
+                    this.image = data.data.productSpecificationPicture
+                }
             }
         }
     }

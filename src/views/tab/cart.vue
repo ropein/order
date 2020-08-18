@@ -4,9 +4,9 @@
     <div class="cartList">
       <ul v-if="goods.length > 0">
         <van-swipe-cell>
-        <li v-for="item in goods" :key="item.id">
+        <li v-for="(item, index) in goods" :key="index">
           <van-checkbox
-                  :value="item.id"
+                  :value="item.shopCart.id"
                   v-model="item.isChecked"
                   checked-color="#15C481"
                   @click="chooseChange(item)"
@@ -14,24 +14,25 @@
           <div class="shopdetail">
             <div class="detailimg">
               <img
-                      :src="item.img"
+                      :src="item.productSpecificationDTO.productSpecificationPicture"
               />
             </div>
             <div class="detailtext">
-              <div class="shoptitle van-multi-ellipsis--l2">{{ item.title }}</div>
+              <div class="shoptitle van-multi-ellipsis--l2">{{ item.productSpecificationDTO.productPO.productName }}</div>
               <p class="stock">
-                仅剩{{item.stock}}件
+                仅剩{{item.productSpecificationDTO.productStorage}}件
               </p>
               <div class="shoppricenum">
                 <p class="shopprice">
-                  ¥{{ item.price }}
+                  ¥{{ item.productSpecificationDTO.productPrice }}
                 </p>
                 <div class="shopnum">
                   <van-stepper
+                          integer
                           min=0
-                          v-model="item.num"
+                          v-model="item.shopCart.goodCount"
                           @change="onChange(item)"
-                          :disable-plus="item.num === item.stock"
+                          :disable-plus="item.shopCart.goodCount === item.productSpecificationDTO.productStorage"
                   />
                 </div>
               </div>
@@ -94,14 +95,25 @@
             };
         },
         mounted() {
+            this.listShopCartByUserId()
             this.setSelectedData()
             this.ifCheckAll()
             this.count()
         },
         computed: {},
         methods: {
+            async listShopCartByUserId() {
+               const {data} = await this.$api.listShopCartByUserId({userId:1})
+                console.log('data106', data.data)
+                this.goods=data.data
+                console.log(108, this.goods)
+                this.goods.forEach(item=> {
+                    item.isChecked=false
+                })
+            },
             // checkbox的change事件
             chooseChange(item) {
+                console.log('item116', item)
                 item.isChecked=!item.isChecked
                 this.setSelectedData()
                 this.ifCheckAll()
@@ -111,7 +123,7 @@
               this.selectedData = []
               this.goods.forEach(item=>{
                   if(item.isChecked){
-                    this.selectedData.push(item.id)
+                    this.selectedData.push(item.shopCart.id)
                 }
               })
                 this.count()
@@ -140,7 +152,7 @@
                 let totalPrice = 0; //临时总价
                 this.goods.forEach(function(val) {
                     if (val.isChecked) {
-                        totalPrice += Number(val.num) * Number(val.price); //累计总价
+                        totalPrice += Number(val.shopCart.goodCount) * Number(val.productSpecificationDTO.productPrice); //累计总价
                     }
                 });
                 this.totalprice = totalPrice;
@@ -152,7 +164,7 @@
                     this.selectedData=[]
                     this.goods.forEach(item=>{
                         item.isChecked = true
-                        this.selectedData.push(item.id)
+                        this.selectedData.push(item.shopCart.id)
                     })
                 } else {
                     this.allchecked = false
@@ -297,7 +309,7 @@
                       font-size: 12px;
                       color: #333333;
                       background-color: #fff;
-                      padding: 0px 12px;
+                      /*padding: 0px 12px;*/
                     }
                   }
                 }

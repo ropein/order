@@ -31,6 +31,14 @@
           />
         </template>
       </van-field>
+      <van-field label="性别" :rules="[{ required: true, message: '请选择性别' }]">
+        <template #input>
+          <van-radio-group v-model="sex" direction="horizontal">
+            <van-radio name="1">男</van-radio>
+            <van-radio name="2">女</van-radio>
+          </van-radio-group>
+        </template>
+      </van-field>
       <van-field
               v-model="tel"
               name="tel"
@@ -77,8 +85,13 @@
               :rules="[{ required: true, message: '请输入验证码' }]"
       >
 
-        <div slot="button" style="width: 70px;" >
-          <img :src="vImg"  @click="getVerifyCode"/>
+        <div slot="button" >
+          <van-button round block type="info" @click="getCode()" v-if="getcodeshow">
+            获取
+          </van-button>
+          <van-button round block type="info" disabled v-else>
+            获取中{{count}}s
+          </van-button>
         </div>
       </van-field>
       <div style="margin: 16px;">
@@ -91,6 +104,7 @@
 </template>
 
 <script>
+    import { Dialog } from 'vant'
     export default {
         name: 'Login',
         data() {
@@ -98,10 +112,10 @@
                 username: '',
                 portrait:[],
                 tel:'',
+                sex:'',
                 password: '',
                 certainpassword:'',
                 verifycode:'',
-                vImg:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1595910341360&di=ddc0499bcd525cd02751e14a78cf9be7&imgtype=0&src=http%3A%2F%2Fs4.sinaimg.cn%2Fmw690%2F003bsgbmgy6R6efoOr1c3',
                 flag: true,
                 certainflag:true,
                 action:'',
@@ -111,19 +125,58 @@
                 // 校验规则
                 // 手机号校验
                 patternPhone:/^1[3456789]\d{9}$/,
-                patternUser:/^[\u4e00-\u9fffa-zA-Z0-9]{1,10}$/
+                patternUser:/^[\u4e00-\u9fffa-zA-Z0-9]{1,10}$/,
+                getcodeshow:true,
+                count: '',
+                timer:null,
+                params:''
             }
         },
         mounted() {
-            this.getVerifyCode()
         },
         methods: {
+            getCode() {
+                if (this.tel) {
+                    Dialog.alert({
+                        title: '已发送验证码',
+                        message: '已向该手机发送验证码，请注意查收',
+                    }).then(() => {
+                        const TIME_COUNT = 5;
+                        if (!this.timer) {
+                            this.getcodeshow=false
+                            this.count = TIME_COUNT;
+                            this.timer = setInterval(() => {
+                                if (this.count > 1 && this.count <= TIME_COUNT) {
+                                    this.count--;
+                                } else {
+                                    this.getcodeshow=true
+                                    clearInterval(this.timer);
+                                    this.timer = null;
+                                }
+                            }, 1000)
+                        }
+                    });
+                } else {
+                    Dialog.alert({
+                        message: '请先输入手机号',
+                    }).then(() => {
+                    });
+                }
+            },
             afterRead(file) {
                 // 此时可以自行将文件上传至服务器
                 console.log(file);
             },
             onSubmit(values) {
                 console.log('submit', values);
+                // this.params.userImg=this.portrait
+                // this.params.userName=this.username
+                // this.params.userPassword=this.password
+                // this.params.userSex=this.sex
+                // this.params.userTel=this.tel
+                // this.params.code=this.verifycode
+                // let data = this.$api.getCode(this.params)
+                // console.log('data179', data)
             },
             onClickLeft() {
                 this.$router.back()
@@ -133,9 +186,6 @@
             },
             changeCertainType() {
               this.certainflag = !this.certainflag
-            },
-            getVerifyCode() {
-                console.log('获取验证码图片')
             },
             validatorCertainPassword(val) {
                 console.log('val', val)

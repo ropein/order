@@ -5,11 +5,17 @@ const getProductCategoryList = p => axios.get('product/getProductCategoryList', 
 // 获取所有商品
 const getAllProductList = p => axios.get('product/getAllProductList', { params: p })
 // 搜索商品
-const getProductListByProductName = (p) => axios.get(`/product/getProductListByProductName/${p}`)
+const getProductListByProductName = (p) => axios.get(`/product/getProductListByProductName`, { params: p })
 // 根据id获取规格列表
 const getProductAttributeListByProductId = (p) => axios.get(`/product/getProductAttributeListByProductId/${p}`)
 // 根据分类id获取商品列表
 const getProductListByProductCategoryId = (p) => axios.get(`/product/getProductListByProductCategoryId`, { params: p })
+// 根据商品id和商品规格获取该商品的详细信息
+const getSpecificationByProductIdAndSpecification = (p) => axios.get(`/product/getSpecificationByProductIdAndSpecification`, { params: p })
+// 获取验证码
+const getCode = (p) => axios.post(`/user/getCode`, { params: p })
+const listShopCartByUserId = (p) => axios.get(`shopCart/listShopCartByUserId`, { params: p })
+
 // http://localhost:3000/api/product/getProductAttributeListByProductId/1
 // const getArticleList = p => axios.get('/article-list', { params: p }) // 获取文章列表
 // const modifyArticle = (id, p) => axios.put(`/article-modify/${id}`, p) // 修改文章
@@ -20,9 +26,8 @@ export default {
     getAllProductList,
     getProductListByProductName,
     getProductAttributeListByProductId,
-    getProductListByProductCategoryId
-    // getArticleList,
-    // modifyArticle,
-    // writeArticle,
-    // deleteArticle
+    getProductListByProductCategoryId,
+    getSpecificationByProductIdAndSpecification,
+    getCode,
+    listShopCartByUserId
 }

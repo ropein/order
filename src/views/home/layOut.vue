@@ -21,7 +21,7 @@
 <!--    >-->
 <!--    </van-popup>-->
     </van-sticky>
-    <router-view style="padding-bottom: 53px"></router-view>
+    <router-view></router-view>
     <div class="footer">
       <van-tabbar v-model="active" placeholder="true">
         <van-tabbar-item icon="home-o" @click="$router.push('/')">首页</van-tabbar-item>
@@ -66,13 +66,14 @@
                 // }
             // },
             person() {
-                window.sessionStorage.setItem('token', 123)
-                let token = window.sessionStorage.getItem('token')
-                if (token) {
-                    this.$router.push('/person')
-                } else {
-                    this.$router.push('/login')
-                }
+                this.$router.push('/login')
+                // window.sessionStorage.setItem('token', 123)
+                // let token = window.sessionStorage.getItem('token')
+                // if (token) {
+                //     this.$router.push('/person')
+                // } else {
+                //     this.$router.push('/login')
+                // }
             }
         }
     }
