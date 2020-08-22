@@ -13,7 +13,12 @@ const getProductListByProductCategoryId = (p) => axios.get(`/product/getProductL
 // 根据商品id和商品规格获取该商品的详细信息
 const getSpecificationByProductIdAndSpecification = (p) => axios.get(`/product/getSpecificationByProductIdAndSpecification`, { params: p })
 // 获取验证码
-const getCode = (p) => axios.post(`/user/getCode`, { params: p })
+const getCode = (p) => axios.get(`/user/getCode`, p)
+// 注册
+const signUp = (p) => axios.post(`/user/signUp`, p)
+// 上传图片
+const upload = (p) => axios.post(`/upload`, p)
+// 购物车
 const listShopCartByUserId = (p) => axios.get(`shopCart/listShopCartByUserId`, { params: p })
 
 // http://localhost:3000/api/product/getProductAttributeListByProductId/1
@@ -29,5 +34,7 @@ export default {
     getProductListByProductCategoryId,
     getSpecificationByProductIdAndSpecification,
     getCode,
-    listShopCartByUserId
+    listShopCartByUserId,
+    upload,
+    signUp
 }

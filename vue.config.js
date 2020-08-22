@@ -35,7 +35,7 @@ module.exports = {
                 pathRewrite:{
                     '^/api':'api'
                 }
-            },
+            }
         },
     },
     /* Webpack相关配置 */

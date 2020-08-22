@@ -16,21 +16,21 @@
                   { pattern: patternUser, message: '用户名不超过十位数且不能有特殊字符' }
                   ]"
       />
-      <van-field
-              name="portrait"
-              label="头像"
-              :rules="[
-                  { required: true, message: '请上传头像' },
-                  ]"
-      >
-        <template #input>
-          <van-uploader
-                  v-model="portrait"
-                  :max-count="1"
-                  :after-read="afterRead"
-          />
-        </template>
-      </van-field>
+<!--      <van-field-->
+<!--              name="portrait"-->
+<!--              label="头像"-->
+<!--              :rules="[-->
+<!--                  { required: true, message: '请上传头像' },-->
+<!--                  ]"-->
+<!--      >-->
+<!--        <template #input>-->
+<!--          <van-uploader-->
+<!--                  v-model="portrait"-->
+<!--                  :max-count="1"-->
+<!--                  :after-read="afterRead"-->
+<!--          />-->
+<!--        </template>-->
+<!--      </van-field>-->
       <van-field label="性别" :rules="[{ required: true, message: '请选择性别' }]">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
@@ -105,6 +105,8 @@
 
 <script>
     import { Dialog } from 'vant'
+    // import axios from 'axios'
+    import upLoaderImg from "../../api/upLoaderImg"
     export default {
         name: 'Login',
         data() {
@@ -129,7 +131,7 @@
                 getcodeshow:true,
                 count: '',
                 timer:null,
-                params:''
+                params:{}
             }
         },
         mounted() {
@@ -140,7 +142,7 @@
                     Dialog.alert({
                         title: '已发送验证码',
                         message: '已向该手机发送验证码，请注意查收',
-                    }).then(() => {
+                    }).then(async () => {
                         const TIME_COUNT = 5;
                         if (!this.timer) {
                             this.getcodeshow=false
@@ -155,6 +157,7 @@
                                 }
                             }, 1000)
                         }
+                        this.$api.getCode({userTel:this.tel})
                     });
                 } else {
                     Dialog.alert({
@@ -163,20 +166,35 @@
                     });
                 }
             },
-            afterRead(file) {
+            async afterRead(file) {
+                let uploadImg = await upLoaderImg(file.file)//使用上传的方法。file.file
+                console.log(uploadImg)
                 // 此时可以自行将文件上传至服务器
-                console.log(file);
+                // let fileparam = {picture: file.file}
+                // console.log('fileparam', file.file)
+                // axios.post('/api/upload', {picture:file.file}, {
+                //     headers: {
+                //         'Content-Type': 'multipart/form-data',
+                //     },
+                // }).then(res => {
+                //     console.log(res);
+                // }).catch(err => {
+                //     console.log(err);
+                // });
+                // let { data } = await this.$api.upload(fileparam)
+                // console.log('data181', data)
             },
-            onSubmit(values) {
+            async onSubmit(values) {
                 console.log('submit', values);
                 // this.params.userImg=this.portrait
-                // this.params.userName=this.username
-                // this.params.userPassword=this.password
-                // this.params.userSex=this.sex
-                // this.params.userTel=this.tel
-                // this.params.code=this.verifycode
-                // let data = this.$api.getCode(this.params)
-                // console.log('data179', data)
+                this.params.userName=values.name
+                this.params.userPassword=this.password
+                this.params.userSex=this.sex
+                this.params.userTel=this.tel
+                this.params.code=this.verifycode
+                console.log('this.params', this.params)
+                let { data } = await this.$api.signUp(this.params)
+                console.log(196, data)
             },
             onClickLeft() {
                 this.$router.back()
