@@ -7,11 +7,11 @@
     />
     <van-form @submit="onSubmit">
       <van-field
-              v-model="username"
-              name="用户名"
-              label="用户名"
-              placeholder="用户名"
-              :rules="[{ required: true, message: '请填写用户名' }]"
+              v-model="tel"
+              name="手机号"
+              label="手机号"
+              placeholder="手机号"
+              :rules="[{ required: true, message: '请填写手机号' }]"
       />
       <van-field
               v-model="password"
@@ -47,6 +47,7 @@
         data() {
             return {
                 username: '',
+                tel:'',
                 password: '',
                 flag: true,
                 action:'',
@@ -56,8 +57,19 @@
             }
         },
         methods: {
-            onSubmit(values) {
+            async onSubmit(values) {
                 console.log('submit', values);
+                this.params = {}
+                // this.params.userImg=this.uploadImg
+                // this.params.userName=this.username
+                this.params.userPassword=this.password
+                // this.params.userSex=Number(this.sex)
+                this.params.userTel=this.tel
+                // this.params.code=this.verifycode
+                console.log('this.params', this.params)
+                let { data } = await this.$api.login(this.params)
+                console.log(69, data.data.token)
+                localStorage.setItem('token', data.data.token)
             },
             onClickLeft() {
                 this.$router.back()

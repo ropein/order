@@ -16,21 +16,21 @@
                   { pattern: patternUser, message: '用户名不超过十位数且不能有特殊字符' }
                   ]"
       />
-<!--      <van-field-->
-<!--              name="portrait"-->
-<!--              label="头像"-->
-<!--              :rules="[-->
-<!--                  { required: true, message: '请上传头像' },-->
-<!--                  ]"-->
-<!--      >-->
-<!--        <template #input>-->
-<!--          <van-uploader-->
-<!--                  v-model="portrait"-->
-<!--                  :max-count="1"-->
-<!--                  :after-read="afterRead"-->
-<!--          />-->
-<!--        </template>-->
-<!--      </van-field>-->
+      <van-field
+              name="portrait"
+              label="头像"
+              :rules="[
+                  { required: true, message: '请上传头像' },
+                  ]"
+      >
+        <template #input>
+          <van-uploader
+                  v-model="portrait"
+                  :max-count="1"
+                  :after-read="afterRead"
+          />
+        </template>
+      </van-field>
       <van-field label="性别" :rules="[{ required: true, message: '请选择性别' }]">
         <template #input>
           <van-radio-group v-model="sex" direction="horizontal">
@@ -167,29 +167,19 @@
                 }
             },
             async afterRead(file) {
-                let uploadImg = await upLoaderImg(file.file)//使用上传的方法。file.file
-                console.log(uploadImg)
                 // 此时可以自行将文件上传至服务器
-                // let fileparam = {picture: file.file}
-                // console.log('fileparam', file.file)
-                // axios.post('/api/upload', {picture:file.file}, {
-                //     headers: {
-                //         'Content-Type': 'multipart/form-data',
-                //     },
-                // }).then(res => {
-                //     console.log(res);
-                // }).catch(err => {
-                //     console.log(err);
-                // });
-                // let { data } = await this.$api.upload(fileparam)
-                // console.log('data181', data)
+                let fileparam = {picture: file.file}
+                console.log('fileparam', fileparam)
+                let uploadImg = await upLoaderImg(file.file)//使用上传的方法。file.file
+                console.log(uploadImg.data)
+                this.uploadImg = uploadImg.data
             },
             async onSubmit(values) {
                 console.log('submit', values);
-                // this.params.userImg=this.portrait
+                this.params.userImg=this.uploadImg
                 this.params.userName=values.name
                 this.params.userPassword=this.password
-                this.params.userSex=this.sex
+                this.params.userSex=Number(this.sex)
                 this.params.userTel=this.tel
                 this.params.code=this.verifycode
                 console.log('this.params', this.params)
